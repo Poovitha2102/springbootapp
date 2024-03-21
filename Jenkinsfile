@@ -1,3 +1,4 @@
+def registry = 'https://poovi.jfrog.io'
 pipeline {
     tools {
         maven "Maven3"
@@ -73,6 +74,7 @@ pipeline {
                 
                 }
             }   
-        }     
+        } 
+        
     }
 }
