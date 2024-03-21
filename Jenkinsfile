@@ -59,7 +59,7 @@ pipeline {
                               "files": [
                                 {
                                   "pattern": "target/springbootApp.jar",
-                                  "target": "ncplmaven-libs-release-local",
+                                  "target": "cicdmaven-libs-release-local",
                                   "flat": "false",
                                   "props" : "${properties}",
                                   "exclusions": [ "*.sha1", "*.md5"]
