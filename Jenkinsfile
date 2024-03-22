@@ -50,14 +50,12 @@ pipeline {
             }
         } 
         
-        stage ("Push Image to ECR")  {
-        steps {
+        
+    stage('Kuberernetes Deployment'){
+        steps{
             script {
-                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 526647897118.dkr.ecr.us-east-1.amazonaws.com'
-                //sh 'docker build -t springboot-app .'
-                sh 'docker tag springboot-app:latest 526647897118.dkr.ecr.us-east-1.amazonaws.com/springboot-app:latest'
-                sh 'docker push 526647897118.dkr.ecr.us-east-1.amazonaws.com/springboot-app:latest'
-
+                sh 'aws eks --region us-east-1 update-kubeconfig --name my-first-eks-cluster1'
+                sh 'kubectl apply -f eks-deploy-k8s.yaml'
             }
         }
     }
