@@ -1,4 +1,3 @@
-def registry = 'https://poovi.jfrog.io'
 pipeline {
     tools {
         maven "Maven3"
@@ -50,31 +49,18 @@ pipeline {
                 }
             }
         } 
-        stage("Jar Publish") {
-            steps {
-                script {
-                        echo '<--------------- Jar Publish Started --------------->'
-                         def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrogaccess"
-                         def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
-                         def uploadSpec = """{
-                              "files": [
-                                {
-                                  "pattern": "target/springbootApp.jar",
-                                  "target": "maven-libs-release-local",
-                                  "flat": "false",
-                                  "props" : "${properties}",
-                                  "exclusions": [ "*.sha1", "*.md5"]
-                                }
-                             ]
-                         }"""
-                         def buildInfo = server.upload(uploadSpec)
-                         buildInfo.env.collect()
-                         server.publishBuildInfo(buildInfo)
-                         echo '<--------------- Jar Publish Ended --------------->'  
-                
-                }
-            }   
-        } 
+        
+        stage ("Push Image to ECR")  {
+        steps {
+            script {
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 526647897118.dkr.ecr.us-east-1.amazonaws.com'
+                //sh 'docker build -t springboot-app .'
+                sh 'docker tag springboot-app:latest 526647897118.dkr.ecr.us-east-1.amazonaws.com/springboot-app:latest'
+                sh 'docker push 526647897118.dkr.ecr.us-east-1.amazonaws.com/springboot-app:latest'
+
+            }
+        }
+    }
         
     }
 }
